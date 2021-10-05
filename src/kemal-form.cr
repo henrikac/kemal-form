@@ -1,6 +1,8 @@
-# TODO: Write documentation for `Kemal::Form`
-module Kemal::Form
-  VERSION = "0.1.0"
+require "kemal"
+require "./kemal-form/**"
 
-  # TODO: Put your code here
+# TODO: Write documentation for `Kemal::Form`
+module Kemal
+  class Form
+  end
 end
