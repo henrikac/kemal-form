@@ -49,6 +49,10 @@ module Kemal
     end
   end
 
+  class EmailField < FormField
+    @type : String = "email"
+  end
+
   class NumberField < FormField
     @type : String = "number"
   end
