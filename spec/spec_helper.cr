@@ -4,10 +4,10 @@ require "../src/kemal-form"
 include Kemal
 
 class CustomForm < Form
-  property name = TextField.new(attrs: {} of String => String, required: true)
-  property age = NumberField.new(attrs: {"min" => "18", "max" => "30"})
-  property password = PasswordField.new(attrs: {} of String => String, required: true)
-  property message = TextAreaField.new(attrs: {"row" => "7", "col" => "5"})
+  field name : TextField
+  field age : NumberField, attrs: {"min" => "18", "max" => "30"}
+  field password : PasswordField
+  field message : TextAreaField, attrs: {"row" => "7", "col" => "5"}, required: false
 end
 
 def build_main_handler
