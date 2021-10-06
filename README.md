@@ -16,15 +16,39 @@ TODO: Write a description here
 
 ## Usage
 
+**src/main.cr**
 ```crystal
+require "kemal"
 require "kemal-form"
+
+class CustomForm < Kemal::Form
+  field username : Kemal::TextField, required: false
+  field email : Kemal::EmailField
+  field age : Kemal::NumberField, attrs: {"min" => "18", "max" => "30"}
+  field password : Kemal::PasswordField
+end
+
+get "/" do
+  my_form = CustomForm.new
+  render "src/views/index.ecr"
+end
 ```
 
-TODO: Write usage instructions here
+Use `macro render_form(form, method = "GET", action = "")` to render the form in your template.
 
-## Development
-
-TODO: Write development instructions here
+**src/views/index.ecr**
+```erb
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>index.ecr</title>
+  </head>
+  <body>
+    <h1>Hello index.ecr</h1>
+    <%= render_form my_form, "POST" %>
+  </body>
+</html>
+```
 
 ## Contributing
 
