@@ -22,10 +22,10 @@ require "kemal"
 require "kemal-form"
 
 class CustomForm < Kemal::Form
-  field username : Kemal::TextField, required: false
-  field email : Kemal::EmailField
-  field age : Kemal::NumberField, attrs: {"min" => "18", "max" => "30"}
-  field password : Kemal::PasswordField
+  field username : Kemal::Form::TextField, required: false
+  field email : Kemal::Form::EmailField
+  field age : Kemal::Form::NumberField, attrs: {"min" => "18", "max" => "30"}
+  field password : Kemal::Form::PasswordField
 end
 
 get "/" do
@@ -46,6 +46,30 @@ Use `macro render_form(form, method = "GET", action = "")` to render the form in
   <body>
     <h1>Hello index.ecr</h1>
     <%= render_form my_form, "POST" %>
+  </body>
+</html>
+```
+
+This will output
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>index.ecr</title>
+  </head>
+  <body>
+    <h1>Hello index.ecr</h1>
+    <form method="POST">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username"/>
+      <label for="email">Email</label>
+      <input type="email" id="email" username="email" required>
+      <label for="age">Age</label>
+      <input type="number" id="age" name="age" min="18" max="30" required>
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required>
+    </form>
   </body>
 </html>
 ```
