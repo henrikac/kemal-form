@@ -2,7 +2,7 @@ require "http"
 
 module Kemal
   class Form
-    @fields : Array(Kemal::FormField)
+    @fields : Array(FormField)
 
     def initialize(@ctx : HTTP::Server::Context? = nil)
       @fields = get_form_fields
@@ -14,8 +14,8 @@ module Kemal
       end
     end
 
-    private def get_form_fields : Array(Kemal::FormField)
-      {{ @type.instance_vars.select { |ivar| ivar.type < Kemal::FormField } }}
+    private def get_form_fields : Array(FormField)
+      {{ @type.instance_vars.select { |ivar| ivar.type < FormField } }}
     end
   end
 end
