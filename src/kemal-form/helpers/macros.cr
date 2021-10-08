@@ -2,7 +2,23 @@ macro field(decl, **options)
   {%
     field_name = decl.var
     field_type = decl.type
-    attrs = options[:attrs]
+
+    id_attr = options[:id]
+    if id_attr.nil?
+      id_attr = field_name.id.stringify
+    end
+
+    name_attr = options[:name]
+    if name_attr.nil?
+      name_attr = field_name.id.stringify
+    end
+
+    extra_attrs = options[:attrs]
+
+    field_value = options[:value]
+    if field_value.nil?
+      field_value = ""
+    end
 
     required = true
     if options[:required] == false
@@ -11,23 +27,21 @@ macro field(decl, **options)
 
     label = options[:label]
     if label.nil?
-      label_for = field_name.id.stringify
-      label_text = field_name.id.stringify.titleize
-      if !attrs.nil? && attrs.keys.includes?("id")
-        label_for = attrs["id"]
-        label_text = attrs["id"].titleize
-      end
+      label_for = id_attr
+      label_text = id_attr.titleize
     end
   %}
 
   @{{field_name}} : {{field_type}} = {{field_type.id}}.new(
-    {{field_name.id.stringify}},
-    {{attrs}},
-    {{required}},
+    id: {{id_attr}},
+    name: {{name_attr}},
+    attrs: {{extra_attrs}},
+    value: {{field_value}},
+    required: {{required}},
     {% if label.nil? %}
-      Kemal::Form::Label.new({{label_for}}, {{label_text}}, nil))
+      label: Kemal::Form::Label.new({{label_for}}, {{label_text}}, nil))
     {% else %}
-      {{label}})
+      label: {{label}})
     {% end %}
 
   def {{field_name.id}} : {{field_type.id}}

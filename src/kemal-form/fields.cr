@@ -13,24 +13,19 @@ module Kemal
       # Additional field attributes.
       @attrs : Hash(String, String)?
 
+      # The value of the field.
+      @value : String
+
       # Is this field required to submit the form.
       @required : Bool
 
       # The field label.
       @label : Form::Label?
 
-      def initialize(field_name : String, @attrs, @required, @label)
-        @id = field_name
-        @name = field_name
+      def initialize(@id, @name, @attrs, @value, @required, @label)
         if !@attrs.nil?
-          a = @attrs.not_nil!
-          a.delete("required")
-          if a.has_key?("id") && !a["id"].empty?
-            @id = a.delete("id").not_nil!
-          end
-          if a.has_key?("name") && !a["name"].empty?
-            @name = a.delete("name").not_nil!
-          end
+          reserved_attrs = ["id", "name", "required"]
+          reserved_attrs.each { |ra| @attrs.not_nil!.delete(ra) }
         end
       end
 
@@ -41,6 +36,7 @@ module Kemal
           @attrs.not_nil!.each { |k,v| io << " #{k}=\"#{v}\"" }
         end
         io << " required" if @required
+        io << " value=\"#{@value}\""
         io << "/>"
       end
     end
@@ -73,7 +69,7 @@ module Kemal
           @attrs.not_nil!.each { |k, v| io << " #{k}=\"#{v}\"" }
         end
         io << " required" if @required
-        io << "></textarea>"
+        io << ">#{@value}</textarea>"
       end
     end
   end
