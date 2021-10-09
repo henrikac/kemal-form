@@ -13,20 +13,36 @@ module Kemal
       # Additional field attributes.
       @attrs : Hash(String, String)?
 
-      # The value of the field.
-      @value : String
-
       # Is this field required to submit the form.
       @required : Bool
 
       # The field label.
       @label : Form::Label?
 
-      def initialize(@id, @name, @attrs, @value, @required, @label)
+      @validators : Array(Kemal::FormValidator::Validator)
+
+      # The value of the field.
+      getter value : String
+
+      getter errors : Array(String) = [] of String
+
+      def initialize(@id, @name, @attrs, @value, @required, @label, @validators)
         if !@attrs.nil?
           reserved_attrs = ["id", "name", "required"]
           reserved_attrs.each { |ra| @attrs.not_nil!.delete(ra) }
         end
+      end
+
+      def validate : Bool
+        @errors.clear if !@errors.empty?
+        @validators.each do |validator|
+          begin
+            validator.validate(self)
+          rescue e : Kemal::Form::ValidationError
+            @errors << e.message.not_nil!
+          end
+        end
+        return @errors.empty?
       end
 
       def to_s(io : IO)

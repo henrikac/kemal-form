@@ -20,9 +20,9 @@ macro field(decl, **options)
       field_value = ""
     end
 
-    required = true
-    if options[:required] == false
-      required = false
+    required = false
+    if options[:required] == true
+      required = true
     end
 
     label = options[:label]
@@ -30,6 +30,8 @@ macro field(decl, **options)
       label_for = id_attr
       label_text = id_attr.titleize
     end
+
+    validators = options[:validators]
   %}
 
   @{{field_name}} : {{field_type}} = {{field_type.id}}.new(
@@ -38,6 +40,11 @@ macro field(decl, **options)
     attrs: {{extra_attrs}},
     value: {{field_value}},
     required: {{required}},
+    {% if validators.nil? %}
+      validators: [] of Kemal::FormValidator::Validator,
+    {% else %}
+      validators: {{validators.id}} of Kemal::FormValidator::Validator,
+    {% end %}
     {% if label.nil? %}
       label: Kemal::Form::Label.new({{label_for}}, {{label_text}}, nil))
     {% else %}
