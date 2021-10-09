@@ -46,6 +46,7 @@ module Kemal
       end
 
       def to_s(io : IO)
+        io << "<div>"
         io << @label
         io << "<input type=\"#{@type}\" id=\"#{@id}\" name=\"#{@name}\""
         if !@attrs.nil? && !@attrs.not_nil!.empty?
@@ -54,6 +55,19 @@ module Kemal
         io << " required" if @required
         io << " value=\"#{@value}\""
         io << "/>"
+        io << render_errors if !@errors.empty?
+        io << "</div>"
+      end
+
+      private def render_errors : String
+        str = String.build do |str|
+          str << "<ul>"
+          @errors.each do |err|
+            str << "<li>#{err}</li>"
+          end
+          str << "</ul>"
+        end
+        str
       end
     end
 
@@ -79,6 +93,7 @@ module Kemal
 
     class TextAreaField < FormField
       def to_s(io : IO)
+        io << "<div>"
         io << @label
         io << "<textarea"
         if !@attrs.nil? && !@attrs.not_nil!.empty?
@@ -86,6 +101,8 @@ module Kemal
         end
         io << " required" if @required
         io << ">#{@value}</textarea>"
+        io << render_errors if !@errors.empty?
+        io << "</div>"
       end
     end
   end
