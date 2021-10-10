@@ -1,5 +1,5 @@
 module Kemal
-  class FormValidator
+  module FormValidator
     abstract class Validator
       @message : String = ""
 
