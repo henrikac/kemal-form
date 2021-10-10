@@ -6,9 +6,18 @@ module Kemal
 
     @buttons : Array(Button)
 
-    def initialize(@ctx : HTTP::Server::Context? = nil)
+    def initialize(ctx : HTTP::Server::Context? = nil)
       @fields = get_form_fields
       @buttons = get_form_buttons
+
+      if !ctx.nil?
+        form_body = ctx.params.body
+        @fields.each do |field|
+          if form_body.has_key?(field.name)
+            field.value = form_body[field.name]
+          end
+        end
+      end
     end
 
     def valid?

@@ -7,9 +7,6 @@ module Kemal
       # The value of the field's id attribute.
       @id : String
 
-      # The value of the field's name attribute.
-      @name : String
-
       # Additional field attributes.
       @attrs : Hash(String, String)?
 
@@ -22,7 +19,10 @@ module Kemal
       @validators : Array(Kemal::FormValidator::Validator)
 
       # The value of the field.
-      getter value : String
+      property value : String
+
+      # The value of the field's name attribute.
+      getter name : String
 
       getter errors : Array(String) = [] of String
 
@@ -102,7 +102,7 @@ module Kemal
       def to_s(io : IO)
         io << "<div>"
         io << @label
-        io << "<textarea"
+        io << "<textarea id=\"#{@id}\" name=\"#{@name}\""
         io << render_attrs if !@attrs.nil? && !@attrs.not_nil!.empty?
         io << " required" if @required
         io << ">#{@value}</textarea>"
@@ -113,7 +113,7 @@ module Kemal
 
     class HiddenField < FormField
       def to_s(io : IO)
-        io << "<input type=\"hidden\""
+        io << "<input type=\"hidden\" id=\"#{@id}\" name=\"#{@name}\""
         io << render_attrs if !@attrs.nil? && !@attrs.not_nil!.empty?
         io << " value=\"#{@value}\"/>"
       end
