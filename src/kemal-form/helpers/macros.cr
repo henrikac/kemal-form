@@ -1,3 +1,26 @@
+macro button(decl, **options)
+  {%
+    button_name = decl.var
+    button_type = decl.type
+
+    button_text = options[:text]
+    button_args = options[:args]
+  %}
+
+  @{{button_name}} : {{button_type}} = {{button_type.id}}.new(
+    {% if !button_text.nil? %}
+      text: {{button_text}}{% unless button_args.nil? %},{% end %}
+    {% end %}
+    {% if !button_args.nil? %}
+      args: {{button_args}}
+    {% end %}
+    )
+
+  def {{button_name.id}} : {{button_type.id}}
+    @{{button_name}}
+  end
+end
+
 macro field(decl, **options)
   {%
     field_name = decl.var

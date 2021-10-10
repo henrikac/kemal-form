@@ -49,14 +49,21 @@ module Kemal
         io << "<div>"
         io << @label
         io << "<input type=\"#{@type}\" id=\"#{@id}\" name=\"#{@name}\""
-        if !@attrs.nil? && !@attrs.not_nil!.empty?
-          @attrs.not_nil!.each { |k,v| io << " #{k}=\"#{v}\"" }
-        end
+        io << render_attrs if !@attrs.nil? && !@attrs.not_nil!.empty?
         io << " required" if @required
         io << " value=\"#{@value}\""
         io << "/>"
         io << render_errors if !@errors.empty?
         io << "</div>"
+      end
+
+      private def render_attrs : String
+        str = String.build do |str|
+          @attrs.not_nil!.each do |k, v|
+            str << " #{k}=\"#{v}\""
+          end
+        end
+        str
       end
 
       private def render_errors : String
@@ -96,13 +103,19 @@ module Kemal
         io << "<div>"
         io << @label
         io << "<textarea"
-        if !@attrs.nil? && !@attrs.not_nil!.empty?
-          @attrs.not_nil!.each { |k, v| io << " #{k}=\"#{v}\"" }
-        end
+        io << render_attrs if !@attrs.nil? && !@attrs.not_nil!.empty?
         io << " required" if @required
         io << ">#{@value}</textarea>"
         io << render_errors if !@errors.empty?
         io << "</div>"
+      end
+    end
+
+    class HiddenField < FormField
+      def to_s(io : IO)
+        io << "<input type=\"hidden\""
+        io << render_attrs if !@attrs.nil? && !@attrs.not_nil!.empty?
+        io << " value=\"#{@value}\"/>"
       end
     end
   end
