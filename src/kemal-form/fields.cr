@@ -1,21 +1,25 @@
 module Kemal
   class Form
+    # Super class of all form fields.
+    #
+    # Custom form fields should inherit from `Kemal::Form::FormField`.
     abstract class FormField
       # The type of the field.
       @type : String = ""
 
-      # The value of the field's id attribute.
+      # The value of id attribute.
       @id : String
 
       # Additional field attributes.
       @attrs : Hash(String, String)?
 
-      # Is this field required to submit the form.
+      # Set the required attribute.
       @required : Bool
 
       # The field label.
       @label : Form::Label?
 
+      # Field validators
       @validators : Array(Kemal::FormValidator::Validator)
 
       # The value of the field.
@@ -24,8 +28,11 @@ module Kemal
       # The value of the field's name attribute.
       getter name : String
 
+      # Erros added by field validators.
       getter errors : Array(String) = [] of String
 
+      # Initializes a new form field with the given *id*, *name*, *attrs*, *value*,
+      # *required*, *label* and *validators*.
       def initialize(@id, @name, @attrs, @value, @required, @label, @validators)
         if !@attrs.nil?
           reserved_attrs = ["id", "name", "required"]
@@ -33,6 +40,7 @@ module Kemal
         end
       end
 
+      # Validates the field.
       def validate : Bool
         @errors.clear if !@errors.empty?
         @validators.each do |validator|
@@ -78,26 +86,31 @@ module Kemal
       end
     end
 
+    # A form field with type *email*.
     class EmailField < FormField
       # :inherit:
       @type : String = "email"
     end
 
+    # A form field with type *number*.
     class NumberField < FormField
       # :inherit:
       @type : String = "number"
     end
 
+    # A form field with type *password*.
     class PasswordField < FormField
       # :inherit:
       @type : String = "password"
     end
 
+    # A form field with type *text*.
     class TextField < FormField
       # :inherit:
       @type : String = "text"
     end
 
+    # A text area form field.
     class TextAreaField < FormField
       def to_s(io : IO)
         io << "<div>"
@@ -111,6 +124,7 @@ module Kemal
       end
     end
 
+    # A form field with type *hidden*.
     class HiddenField < FormField
       def to_s(io : IO)
         io << "<input type=\"hidden\" id=\"#{@id}\" name=\"#{@name}\""

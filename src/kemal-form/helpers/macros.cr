@@ -1,3 +1,16 @@
+# Generates a button field for a `Kemal::Form` class. A button can take 2 optional
+# arguments/options; text and args.
+#
+# text: The text content of the button.
+# args: A hash of attributes to add to the button.
+#
+# ```
+# class CustomForm < Kemal::Form
+#   button submit : Kemal::Form::SubmitButton,
+#                   text: "Login",
+#                   args: {"class" => "btn btn-primary"}
+# end
+# ```
 macro button(decl, **options)
   {%
     button_name = decl.var
@@ -21,6 +34,22 @@ macro button(decl, **options)
   end
 end
 
+# Generates a field for a `Kemal::Form` class. A field can take a couple of optional
+# arguments/options; id, name, attrs, value, required, validators and label.
+#
+# id: The value of the id attribute.
+# name: The value of the name attribute.
+# attrs: A hash of additional attributes to add to the field.
+# value: The value of the field.
+# required: A boolean that tells if the required attribute should be added to the field (default: false).
+# validators: An array of `Kemal::FormValidator::Validator`.
+# label: Custom field label (`Kemal::Form::Label`).
+#
+# ```
+# class CustomForm < Kemal::Form
+#   field name : Kemal::Form::TextField
+# end
+# ```
 macro field(decl, **options)
   {%
     field_name = decl.var
@@ -79,7 +108,13 @@ macro field(decl, **options)
   end
 end
 
-macro render_form(form, method = "GET", action = "")
+# Render the *form* with given *method* and *action*.
+#
+# ```
+# # view.ecr
+# <%= render_form form, "POST" %>
+# ```
+macro render_form(form, method, action = "")
   io = IO::Memory.new
   io << "<form method=\"" + {{method.id.stringify}} + "\""
   {% if !action.empty? %}

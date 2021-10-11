@@ -2,10 +2,13 @@ require "http"
 
 module Kemal
   class Form
+    # Fields added to the form.
     @fields : Array(FormField)
 
+    # Buttons added to the form.
     @buttons : Array(Button)
 
+    # Initializes a new form.
     def initialize(ctx : HTTP::Server::Context? = nil)
       @fields = get_form_fields
       @buttons = get_form_buttons
@@ -20,6 +23,7 @@ module Kemal
       end
     end
 
+    # Validates the form.
     def valid?
       is_valid = true
       @fields.each do |field|

@@ -1,6 +1,6 @@
 # kemal-form
 
-TODO: Write a description here
+kemal-form is a shard that makes it easy and fun to work with forms in your [Kemal](https://kemalcr.com/) applications.
 
 ## Installation
 
@@ -26,6 +26,7 @@ class CustomForm < Kemal::Form
   field email : Kemal::Form::EmailField
   field age : Kemal::Form::NumberField, attrs: {"min" => "18", "max" => "30"}
   field password : Kemal::Form::PasswordField, required: true
+  button submit : Kemal::Form::SubmitButton
 end
 
 get "/" do
@@ -34,7 +35,7 @@ get "/" do
 end
 ```
 
-Use `macro render_form(form, method = "GET", action = "")` to render the form in your template.
+Use `macro render_form(form, method, action = "")` to render the form in your template.
 
 **src/views/index.ecr**
 ```erb
@@ -61,17 +62,48 @@ This will output
   <body>
     <h1>Hello index.ecr</h1>
     <form method="POST">
-      <label for="username">Username</label>
-      <input type="text" id="username" name="username" required/>
-      <label for="email">Email</label>
-      <input type="email" id="email" username="email"/>
-      <label for="age">Age</label>
-      <input type="number" id="age" name="age" min="18" max="30"/>
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password" required/>
+      <div>
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required/>
+      </div>
+      <div>
+        <label for="email">Email</label>
+        <input type="email" id="email" username="email"/>
+      </div>
+      <div>
+        <label for="age">Age</label>
+        <input type="number" id="age" name="age" min="18" max="30"/>
+      </div>
+      <div>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required/>
+      </div>
+      <button type="submit">Submit</button>
     </form>
   </body>
 </html>
+```
+
+#### Fields
+
+kemal-form comes with a few built-in fields:
++ `EmailField`
++ `HiddenField`
++ `NumberField`
++ `PasswordField`
++ `TextField`
++ `TextAreaField`
+
+Custom fields are easy to create if the built-in fields are not sufficient enough.
+
+```crystal
+class CustomField < Kemal::Form::FormField
+  # code ...
+
+  def to_s(io : IO)
+    # how this field should be rendered
+  end
+end
 ```
 
 #### Field validators
@@ -79,20 +111,31 @@ This will output
 kemal-form comes with a few field validators that helps making sure that the form data is valid.
 
 ```crystal
-class MyForm < Kemal::Form
-  field name : Kemal::Form::TextField,
-                 validators: [
-                   Kemal::FormValidator::Required.new,
-                   Kemal::FormValidator::Length.new(min: 6, max: 25)
-                 ]
+class LoginForm < Kemal::Form
+  field username : Kemal::Form::TextField,
+                    validators: [
+                      Kemal::FormValidator::Required.new,
+                    ]
+  field password : Kemal::Form::PasswordField,
+                    validators: [
+                      Kemal::FormValidator::Length.new(min: 6)
+                    ]
+  button login : Kemal::Form::SubmitButton,
+                  text: "Login"
 end
 
-post "/" do
-  form = MyForm.new
-  if form.valid?
-    puts "form is valid"
+get "/login" do
+  login_form = LoginForm.new
+  render "src/views/login.ecr"
+end
+
+post "/login" do |env|
+  login_form = MyForm.new env
+  if login_form.valid?
+    puts "You are now logged in"
+    env.redirect "/"
   end
-  render "src/views/index.ecr"
+  render "src/views/login.ecr"
 end
 ```
 
@@ -113,7 +156,7 @@ class CustomValidator < Kemal::FormValidator::Validator
   def validate(field : Kemal::Form::FormField)
     # code ...
     #
-    # to indicate that validation failed
+    # to signal that validation failed
     # raise Kemal::Form::ValidationError
   end
 end

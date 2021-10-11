@@ -1,4 +1,26 @@
 module Kemal
+  # `Kemal::FormValidator` is a module that contains a collection of different
+  # form field validators.
+  #
+  # Validators in `Kemal::FormValidator`:
+  # + `Kemal::FormValidator::Required`
+  # + `Kemal::FormValidator::Length`
+  # + `Kemal::FormValidator::NumberRange`
+  #
+  # Custom validators can be created by making a class inherit from `Kemal::FormValidator::Validator`
+  # and implement a custom `def validate(field : Kemal::Form::FormField)`. `validate`
+  # should raise a `Kemal::Form::ValidationError` to signal that a validation error has occured.
+  #
+  # ```
+  # class CustomValidator < Kemal::FormValidator::Validator
+  #   def validate(field : Kemal::Form::FormField)
+  #     # code ....
+  #     #
+  #     # raise a Kemal::Form::ValidationError to signal that
+  #     # a validation error has occured
+  #   end
+  # end
+  # ```
   module FormValidator
     abstract class Validator
       @message : String = ""
@@ -6,6 +28,7 @@ module Kemal
       abstract def validate(field : Kemal::Form::FormField)
     end
 
+    # `Kemal::FormValidator::Required` validates that input was provided.
     class Required < Validator
       @message : String = "This field is required"
 
@@ -18,6 +41,7 @@ module Kemal
       end
     end
 
+    # `Kemal::FormValidator::Length` validates the length of a string.
     class Length < Validator
       @min : Int32
       @max : Int32
@@ -50,6 +74,8 @@ module Kemal
       end
     end
 
+    # `Kemal::FormValidator::NumberRange` validates that a number is of a minimum and/or
+    # maximum value, inclusive.
     class NumberRange < Validator
       @min : Number::Primitive?
       @max : Number::Primitive?
