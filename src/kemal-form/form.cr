@@ -45,7 +45,14 @@ module Kemal
 
     private def get_form_buttons : Array(Button)
       buttons = [] of Button
-      buttons + {{ @type.instance_vars.select { |ivar| ivar.type < Button } }}
+      {% begin %}
+        {% form_buttons = @type.instance_vars.select { |ivar| ivar.type < Button } %}
+        {% if form_buttons.empty? %}
+          return buttons
+        {% else %}
+          return buttons + {{form_buttons}}
+        {% end %}
+      {% end %}
     end
   end
 end

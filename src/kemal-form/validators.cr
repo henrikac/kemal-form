@@ -57,7 +57,7 @@ module Kemal
       def initialize(@min = nil, @max = nil, @message = "")
         if @min.nil? && @max.nil?
           raise ArgumentError.new("At least one of 'min' or 'max' must be specified")
-        elsif !@max.nil? && @min.not_nil! >= @max.not_nil!
+        elsif !@min.nil? && !@max.nil? && @min.not_nil! >= @max.not_nil!
           raise ArgumentError.new("'min' cannot be greater than or equal to 'max'")
         end
       end
