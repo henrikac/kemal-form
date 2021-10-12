@@ -12,6 +12,7 @@
 # end
 # ```
 macro button(decl, **options)
+  {% raise "must be type Kemal::Form::Button" unless decl.type.resolve < Kemal::Form::Button %}
   {%
     button_name = decl.var
     button_type = decl.type
@@ -51,6 +52,7 @@ end
 # end
 # ```
 macro field(decl, **options)
+  {% raise "must be type Kemal::Form::FormField" unless decl.type.resolve < Kemal::Form::FormField %}
   {%
     field_name = decl.var
     field_type = decl.type
