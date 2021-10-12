@@ -84,6 +84,39 @@ This will output
 </html>
 ```
 
+The way that the form is rendered does not fit all situations and if the form needs to be rendered in a different way simply create your own `render_form` macro.
+
+```crystal
+macro render_form(form)
+  io = IO::Memory.new
+  io << "<form method=\"POST\">"
+  
+  # access each field in the form
+  {{form.id}}.fields.each do |field|
+    # code ...
+  end
+
+  # access each button in the form
+  {{form.id}}.buttons.each do |button|
+    # code ...
+  end
+
+  io << "</form>"
+  io.to_s
+end
+```
+
+The field macro used to generate form fields takes a few optional arguments/options:
++ id: The value of the fields id attribute.
++ name: The value of the fields name attribute.
++ attrs: A hash of extra field attributes.
++ value: The value of the fields value attribute.
++ required: A boolean to signal if the required attribute should be set.
++ validators: An array of field validators.
++ label: The fields label (`Kemal::Form::Label(for, text, attrs)`).
+
+*Note:* The required attribute is only for client-side validation and it will not be checked when `Kemal::Form#valid?` is run.
+
 #### Fields
 
 kemal-form comes with a few built-in fields:
@@ -105,6 +138,10 @@ class CustomField < Kemal::Form::FormField
   end
 end
 ```
+
+#### Buttons
+
+kemal-form comes with a single button `Kemal::Form::SubmitButton`. However, custom buttons can be created by inheriting from `Kemal::Form::Button`.
 
 #### Field validators
 
