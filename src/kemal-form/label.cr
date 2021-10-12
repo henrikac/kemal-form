@@ -11,6 +11,7 @@ module Kemal
       # Additional label attributes.
       @attrs : Hash(String, String)? = nil
 
+      # Initializes a new form label with the given *for*, *text* and *attrs*.
       def initialize(@for, @text, @attrs)
       end
 

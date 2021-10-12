@@ -116,12 +116,30 @@ end
 # ```
 macro render_form(form, method, action = "")
   io = IO::Memory.new
-  io << "<form method=\"" + {{method.id.stringify}} + "\""
+  io << "<form method=\"#{{{method.id.stringify}}}\""
   {% if !action.empty? %}
     io << " method=\"#{action.id.stringify}\""
   {% end %}
   io << ">"
-  io << {{ form }}
+
+  {{form.id}}.fields.each do |field|
+    io << "<div>"
+    io << field.label
+    io << field
+    if !field.errors.empty?
+      io << "<ul>"
+      field.errors.each do |error|
+        io << "<li>#{error}</li>"
+      end
+      io << "</ul>"
+    end
+    io << "</div>"
+  end
+
+  {{form.id}}.buttons.each do |button|
+    io << button
+  end
+
   io << "</form>"
   io.to_s
 end

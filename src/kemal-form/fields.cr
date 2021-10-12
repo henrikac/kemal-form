@@ -16,9 +16,6 @@ module Kemal
       # Set the required attribute.
       @required : Bool
 
-      # The field label.
-      @label : Form::Label?
-
       # Field validators
       @validators : Array(Kemal::FormValidator::Validator)
 
@@ -27,6 +24,9 @@ module Kemal
 
       # The value of the field's name attribute.
       getter name : String
+
+      # The field label.
+      getter label : Form::Label?
 
       # Erros added by field validators.
       getter errors : Array(String) = [] of String
@@ -54,15 +54,10 @@ module Kemal
       end
 
       def to_s(io : IO)
-        io << "<div>"
-        io << @label
         io << "<input type=\"#{@type}\" id=\"#{@id}\" name=\"#{@name}\""
         io << render_attrs if !@attrs.nil? && !@attrs.not_nil!.empty?
         io << " required" if @required
-        io << " value=\"#{@value}\""
-        io << "/>"
-        io << render_errors if !@errors.empty?
-        io << "</div>"
+        io << " value=\"#{@value}\"/>"
       end
 
       private def render_attrs : String
@@ -73,54 +68,26 @@ module Kemal
         end
         str
       end
+    end
 
-      private def render_errors : String
-        str = String.build do |str|
-          str << "<ul>"
-          @errors.each do |err|
-            str << "<li>#{err}</li>"
-          end
-          str << "</ul>"
+    {% begin %}
+      {% fields = %w(email number password text) %}
+      {% for field in fields %}
+        # A form field with type *{{field.id}}*
+        class {{field.id.stringify.titleize.id}}Field < FormField
+          # :inherit:
+          @type : String = {{field.id.stringify}}
         end
-        str
-      end
-    end
-
-    # A form field with type *email*.
-    class EmailField < FormField
-      # :inherit:
-      @type : String = "email"
-    end
-
-    # A form field with type *number*.
-    class NumberField < FormField
-      # :inherit:
-      @type : String = "number"
-    end
-
-    # A form field with type *password*.
-    class PasswordField < FormField
-      # :inherit:
-      @type : String = "password"
-    end
-
-    # A form field with type *text*.
-    class TextField < FormField
-      # :inherit:
-      @type : String = "text"
-    end
+      {% end %}
+    {% end %}
 
     # A text area form field.
     class TextAreaField < FormField
       def to_s(io : IO)
-        io << "<div>"
-        io << @label
         io << "<textarea id=\"#{@id}\" name=\"#{@name}\""
         io << render_attrs if !@attrs.nil? && !@attrs.not_nil!.empty?
         io << " required" if @required
         io << ">#{@value}</textarea>"
-        io << render_errors if !@errors.empty?
-        io << "</div>"
       end
     end
 

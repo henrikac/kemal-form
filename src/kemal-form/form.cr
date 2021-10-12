@@ -3,10 +3,10 @@ require "http"
 module Kemal
   class Form
     # Fields added to the form.
-    @fields : Array(FormField)
+    getter fields : Array(FormField)
 
     # Buttons added to the form.
-    @buttons : Array(Button)
+    getter buttons : Array(Button)
 
     # Initializes a new form.
     def initialize(ctx : HTTP::Server::Context? = nil)
@@ -32,15 +32,6 @@ module Kemal
         end
       end
       return is_valid
-    end
-    
-    def to_s(io : IO)
-      @fields.each_with_index do |field, _|
-        io << field
-      end
-      @buttons.each_with_index do |button, _|
-        io << button
-      end
     end
 
     private def get_form_fields : Array(FormField)
