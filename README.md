@@ -171,6 +171,7 @@ post "/login" do |env|
   if login_form.valid?
     puts "You are now logged in"
     env.redirect "/"
+    next
   end
   render "src/views/login.ecr"
 end
