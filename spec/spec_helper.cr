@@ -10,6 +10,11 @@ class CustomForm < Form
   field message : TextAreaField, attrs: {"row" => "7", "col" => "5"}, required: false
 end
 
+class CustomValidationForm < Form
+  field name : TextField, validators: [FormValidator::Required.new]
+  field password : PasswordField, validators: [FormValidator::Length.new(min: 6)]
+end
+
 def build_main_handler
   Kemal.config.setup
   main_handler = Kemal.config.handlers.first
