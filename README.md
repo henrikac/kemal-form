@@ -126,6 +126,8 @@ kemal-form comes with a few built-in fields:
 + `PasswordField`
 + `TextField`
 + `TextAreaField`
++ `CheckboxField`
++ `RadioField`
 
 Custom fields are easy to create if the built-in fields are not sufficient enough.
 
@@ -182,6 +184,7 @@ end
 | `Required` | Validates that the field is not empty |
 | `Length` | Validates that the field has a `min` length, `max` length or has a length between `min` and `max` |
 | `NumberRange` | Validates that a number has a `min` value, `max` value or has a value between `min` and `max` |
+| `Email` | Validates that the field is a valid email |
 
 #### Custom field validators
 
