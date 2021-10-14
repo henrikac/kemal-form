@@ -37,6 +37,10 @@ module Kemal
       def initialize(@message); end
 
       def validate(field : Kemal::Form::FormField)
+        if field.is_a?(Kemal::Form::CheckboxField)
+          return if field.checked
+          raise Kemal::Form::ValidationError.new(@message)
+        end
         raise Kemal::Form::ValidationError.new(@message) if field.value.empty?
       end
     end

@@ -13,9 +13,32 @@ module Kemal
       @fields = get_form_fields
       @buttons = get_form_buttons
 
-      if !ctx.nil?
+      radio_groups = Set(String).new
+      if ctx.nil?
+        @fields.each do |field|
+          if field.is_a?(Kemal::Form::RadioField) && !radio_groups.includes?(field.name)
+            field.checked = true
+            radio_groups << field.name
+          end
+        end
+      else
         form_body = ctx.params.body
         @fields.each do |field|
+          if field.is_a?(Kemal::Form::CheckboxField)
+            field.checked = form_body.has_key?(field.name)
+            next
+          end
+
+          if field.is_a?(Kemal::Form::RadioField)
+            if form_body.has_key?(field.name)
+              field.checked = field.value == form_body[field.name]
+            elsif !radio_groups.includes?(field.name)
+              field.checked = true
+              radio_groups << field.name
+            end
+            next
+          end
+
           if form_body.has_key?(field.name)
             field.value = form_body[field.name]
           end

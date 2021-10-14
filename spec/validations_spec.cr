@@ -4,6 +4,7 @@ class TestValidator < Kemal::Form
   field username : Kemal::Form::TextField
   field email : Kemal::Form::EmailField
   field age : Kemal::Form::NumberField
+  field agree : Kemal::Form::CheckboxField
 end
 
 describe "Kemal::FormValidator::Validator" do
@@ -14,6 +15,23 @@ describe "Kemal::FormValidator::Validator" do
       validator = Kemal::FormValidator::Required.new
 
       validator.validate(form.username).should be_nil
+    end
+
+    it "should pass if checkbox is checked" do
+      form = TestValidator.new
+      form.agree.checked = true
+      validator = Kemal::FormValidator::Required.new
+      validator.validate(form.agree).should be_nil
+    end
+
+    it "should raise a validation error if checkbox is unchecked" do
+      form = TestValidator.new
+      form.agree.checked = false
+      validator = Kemal::FormValidator::Required.new
+
+      expect_raises(Kemal::Form::ValidationError) do
+        validator.validate(form.agree)
+      end
     end
 
     it "should raise a validation error if field is empty" do
