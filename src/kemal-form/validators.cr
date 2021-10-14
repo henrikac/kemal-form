@@ -109,5 +109,23 @@ module Kemal
         raise Kemal::Form::ValidationError.new(@message)
       end
     end
+
+    # `Kemal::FormValidator::Email` validates that the input is a valid email.
+    # The regex pattern used to validate the email is a non-strict pattern meaning that
+    # it only catches common typo errors. However, it is possible to specify another, more strict,
+    # pattern if needed.
+    #
+    # ```
+    # Kemal::FormValidator::Email.new
+    # Kemal::FormValidator::Email.new(/custom-validation-pattern/)
+    # ```
+    class Email < Validator
+      def initialize(@pattern : Regex = /^\S+@\S+\.\S+$/, @message : String = "Field must be a valid email")
+      end
+
+      def validate(field : Kemal::Form::FormField)
+        raise Kemal::Form::ValidationError.new(@message) if @pattern.match(field.value).nil?
+      end
+    end
   end
 end

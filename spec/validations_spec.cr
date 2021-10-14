@@ -211,5 +211,33 @@ describe "Kemal::FormValidator::Validator" do
         end
       end
     end
+
+    describe "Email" do
+      it "should pass if value is a valid email" do
+        form = TestValidator.new
+        validator = Kemal::FormValidator::Email.new
+
+        form.email.value = "alice@bob.com"
+
+        validator.validate(form.email).should be_nil
+      end
+
+      it "should raise a validation error if email is not valid" do
+        invalid_emails = [
+          "alice @bob.com",
+          "alice@ bob.com",
+          "alice@bobcom"
+        ]
+        form = TestValidator.new
+        validator = Kemal::FormValidator::Email.new
+
+        invalid_emails.each do |email|
+          form.email.value = email
+          expect_raises(Kemal::Form::ValidationError) do
+            validator.validate(form.email)
+          end
+        end
+      end
+    end
   end
 end
