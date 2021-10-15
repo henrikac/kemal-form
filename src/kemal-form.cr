@@ -30,10 +30,12 @@ module Kemal
   #   if form.valid?
   #     puts "You are now logged in"
   #     env.redirect "/"
+  #     next
   #   end
   #   render "src/views/login.ecr"
   # end
   # ```
   class Form
+    VERSION = "0.3.0"
   end
 end
