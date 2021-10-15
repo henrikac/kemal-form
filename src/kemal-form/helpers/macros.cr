@@ -51,41 +51,41 @@ end
 #   field name : Kemal::Form::TextField
 # end
 # ```
-macro field(decl, **options)
-  {% raise "must be type Kemal::Form::FormField" unless decl.type.resolve < Kemal::Form::FormField %}
+macro field(decl, **opts)
+  {% raise "must be type Kemal::Form::Field" unless decl.type.resolve < Kemal::Form::Field %}
   {%
     field_name = decl.var
     field_type = decl.type
 
-    id_attr = options[:id]
+    id_attr = opts[:id]
     if id_attr.nil?
       id_attr = field_name.id.stringify
     end
 
-    name_attr = options[:name]
+    name_attr = opts[:name]
     if name_attr.nil?
       name_attr = field_name.id.stringify
     end
 
-    extra_attrs = options[:attrs]
+    extra_attrs = opts[:attrs]
 
-    field_value = options[:value]
+    field_value = opts[:value]
     if field_value.nil?
       field_value = ""
     end
 
     required = false
-    if options[:required] == true
+    if opts[:required] == true
       required = true
     end
 
-    label = options[:label]
+    label = opts[:label]
     if label.nil?
       label_for = id_attr
       label_text = id_attr.titleize
     end
 
-    validators = options[:validators]
+    validators = opts[:validators]
   %}
 
   @{{field_name}} : {{field_type}} = {{field_type.id}}.new(
@@ -94,6 +94,9 @@ macro field(decl, **options)
     attrs: {{extra_attrs}},
     value: {{field_value}},
     required: {{required}},
+    {% if field_type.resolve == Kemal::Form::SelectField && !opts[:options].nil? %}
+      options: {{opts[:options]}},
+    {% end %}
     {% if validators.nil? %}
       validators: [] of Kemal::FormValidator::Validator,
     {% else %}

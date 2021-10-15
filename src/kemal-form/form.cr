@@ -2,13 +2,28 @@ require "http"
 
 module Kemal
   class Form
-    # Fields added to the form.
-    getter fields : Array(FormField)
+    # Returns the form's fields.
+    getter fields : Array(Field)
 
-    # Buttons added to the form.
+    # Returns the form's buttons.
     getter buttons : Array(Button)
 
     # Initializes a new form.
+    #
+    # ```
+    # class MyForm < Kemal::Form
+    # end
+    #
+    # get "/" do
+    #   form = MyForm.new
+    #   render "src/views/index.ecr"
+    # end
+    #
+    # post "/" do |env|
+    #   form = MyForm.new env
+    #   # ...
+    #   render "src/views/index.ecr"
+    # ```
     def initialize(ctx : HTTP::Server::Context? = nil)
       @fields = get_form_fields
       @buttons = get_form_buttons
@@ -39,6 +54,15 @@ module Kemal
             next
           end
 
+          if field.is_a?(Kemal::Form::SelectField)
+            if form_body.has_key?(field.name)
+              field.options.each do |option|
+                option.selected = option.value == form_body[field.name]
+              end
+            end
+            next
+          end
+
           if form_body.has_key?(field.name)
             field.value = form_body[field.name]
           end
@@ -47,6 +71,20 @@ module Kemal
     end
 
     # Validates the form.
+    #
+    # ```
+    # class MyForm < Kemal::Form
+    # end
+    #
+    # post "/" do |env|
+    #   form = MyForm.new env
+    #   if form.valid?
+    #     puts "form is valid"
+    #     env.redirect "/"
+    #     next
+    #   end
+    #   render "src/views/index.ecr"
+    # end
     def valid?
       is_valid = true
       @fields.each do |field|
@@ -57,8 +95,8 @@ module Kemal
       return is_valid
     end
 
-    private def get_form_fields : Array(FormField)
-      {{ @type.instance_vars.select { |ivar| ivar.type < FormField } }}
+    private def get_form_fields : Array(Field)
+      {{ @type.instance_vars.select { |ivar| ivar.type < Field } }}
     end
 
     private def get_form_buttons : Array(Button)

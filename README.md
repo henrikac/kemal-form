@@ -128,11 +128,12 @@ kemal-form comes with a few built-in fields:
 + `TextAreaField`
 + `CheckboxField`
 + `RadioField`
++ `SelectField`
 
 Custom fields are easy to create if the built-in fields are not sufficient enough.
 
 ```crystal
-class CustomField < Kemal::Form::FormField
+class CustomField < Kemal::Form::Field
   # code ...
 
   def to_s(io : IO)

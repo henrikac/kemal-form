@@ -6,14 +6,15 @@ module Kemal
   # + `Kemal::FormValidator::Required`
   # + `Kemal::FormValidator::Length`
   # + `Kemal::FormValidator::NumberRange`
+  # + `Kemal::FormValidator::Email`
   #
   # Custom validators can be created by making a class inherit from `Kemal::FormValidator::Validator`
-  # and implement a custom `def validate(field : Kemal::Form::FormField)`. `validate`
+  # and implement a custom `def validate(field : Kemal::Form::Field)`. `validate`
   # should raise a `Kemal::Form::ValidationError` to signal that a validation error has occured.
   #
   # ```
   # class CustomValidator < Kemal::FormValidator::Validator
-  #   def validate(field : Kemal::Form::FormField)
+  #   def validate(field : Kemal::Form::Field)
   #     # code ....
   #     #
   #     # raise a Kemal::Form::ValidationError to signal that
@@ -25,7 +26,7 @@ module Kemal
     abstract class Validator
       @message : String = ""
 
-      abstract def validate(field : Kemal::Form::FormField)
+      abstract def validate(field : Kemal::Form::Field)
     end
 
     # `Kemal::FormValidator::Required` validates that input was provided.
@@ -36,7 +37,7 @@ module Kemal
 
       def initialize(@message); end
 
-      def validate(field : Kemal::Form::FormField)
+      def validate(field : Kemal::Form::Field)
         if field.is_a?(Kemal::Form::CheckboxField)
           return if field.checked
           raise Kemal::Form::ValidationError.new(@message)
@@ -58,7 +59,7 @@ module Kemal
         end
       end
 
-      def validate(field : Kemal::Form::FormField)
+      def validate(field : Kemal::Form::Field)
         str_len = field.value.size
         return if str_len >= @min && (@max == -1 || str_len <= @max)
 
@@ -92,7 +93,7 @@ module Kemal
         end
       end
 
-      def validate(field : Kemal::Form::FormField)
+      def validate(field : Kemal::Form::Field)
         field_data = field.value.try &.to_f?
         if field_data.nil?
           raise Kemal::Form::ValidationError.new("Invalid field input")
@@ -127,7 +128,7 @@ module Kemal
       def initialize(@pattern : Regex = /^\S+@\S+\.\S+$/, @message : String = "Field must be a valid email")
       end
 
-      def validate(field : Kemal::Form::FormField)
+      def validate(field : Kemal::Form::Field)
         raise Kemal::Form::ValidationError.new(@message) if @pattern.match(field.value).nil?
       end
     end
