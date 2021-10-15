@@ -3,7 +3,7 @@ require "http"
 module Kemal
   class Form
     # Fields added to the form.
-    getter fields : Array(FormField)
+    getter fields : Array(Field)
 
     # Buttons added to the form.
     getter buttons : Array(Button)
@@ -57,8 +57,8 @@ module Kemal
       return is_valid
     end
 
-    private def get_form_fields : Array(FormField)
-      {{ @type.instance_vars.select { |ivar| ivar.type < FormField } }}
+    private def get_form_fields : Array(Field)
+      {{ @type.instance_vars.select { |ivar| ivar.type < Field } }}
     end
 
     private def get_form_buttons : Array(Button)

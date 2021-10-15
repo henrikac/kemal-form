@@ -52,7 +52,7 @@ end
 # end
 # ```
 macro field(decl, **options)
-  {% raise "must be type Kemal::Form::FormField" unless decl.type.resolve < Kemal::Form::FormField %}
+  {% raise "must be type Kemal::Form::Field" unless decl.type.resolve < Kemal::Form::Field %}
   {%
     field_name = decl.var
     field_type = decl.type
