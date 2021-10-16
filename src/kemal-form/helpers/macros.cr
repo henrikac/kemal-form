@@ -74,17 +74,9 @@ macro field(decl, **opts)
       field_value = ""
     end
 
-    required = false
-    if opts[:required] == true
-      required = true
-    end
+    required = opts[:required] == true
 
     label = opts[:label]
-    if label.nil?
-      label_for = id_attr
-      label_text = id_attr.titleize
-    end
-
     validators = opts[:validators]
   %}
 
@@ -94,19 +86,14 @@ macro field(decl, **opts)
     attrs: {{extra_attrs}},
     value: {{field_value}},
     required: {{required}},
+    label: {{label}},
+    {% if !validators.nil? %}
+      validators: {{validators.id}} of Kemal::FormValidator::Validator,
+    {% end %}
     {% if field_type.resolve == Kemal::Form::SelectField && !opts[:options].nil? %}
       options: {{opts[:options]}},
     {% end %}
-    {% if validators.nil? %}
-      validators: [] of Kemal::FormValidator::Validator,
-    {% else %}
-      validators: {{validators.id}} of Kemal::FormValidator::Validator,
-    {% end %}
-    {% if label.nil? %}
-      label: Kemal::Form::Label.new({{label_for}}, {{label_text}}, nil))
-    {% else %}
-      label: {{label}})
-    {% end %}
+  )
 
   def {{field_name.id}} : {{field_type.id}}
     @{{field_name}}

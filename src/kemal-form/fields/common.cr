@@ -5,10 +5,11 @@ module Kemal
       {% for field in fields %}
         # A form field with type *{{field.id}}*
         class {{field.id.stringify.titleize.id}}Field < Field
-          # :inherit:
+          # The type of the field.
           @type : String = {{field.id.stringify}}
           
           {% if field.id.stringify == "checkbox" || field.id.stringify == "radio" %}
+            # Whether the field is checked.
             property checked : Bool = false
 
             def to_s(io : IO)

@@ -85,6 +85,7 @@ module Kemal
     #   end
     #   render "src/views/index.ecr"
     # end
+    # ```
     def valid?
       is_valid = true
       @fields.each do |field|

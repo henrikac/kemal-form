@@ -29,14 +29,15 @@ module Kemal
       getter options : Array(Option)
 
       # Initializes a new `SelectField`.
-      def initialize(@id,
-        @name,
-        @attrs,
-        @value,
-        @required,
-        @label,
-        @validators,
+      def initialize(id,
+        name,
+        attrs,
+        value,
+        required,
+        label,
+        validators = [] of Kemal::FormValidator::Validator,
         @options = [] of Option)
+        super id, name, attrs, value, required, label, validators
       end
 
       def to_s(io : IO)
