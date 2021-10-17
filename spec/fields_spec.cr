@@ -69,4 +69,82 @@ describe "Kemal::Form::Field" do
       end
     {% end %}
   {% end %}
+
+  describe "TextAreaField" do
+    it "has id and name attributes" do
+      textarea = Kemal::Form::TextAreaField.new(
+        id: "textarea",
+        name: "textarea",
+        value: "",
+        attrs: nil,
+        required: false)
+      expected = "<textarea id=\"textarea\" name=\"textarea\"></textarea>"
+
+      textarea.to_s.should eq expected
+    end
+
+    it "renders extra attributes" do
+      textarea = Kemal::Form::TextAreaField.new(
+        id: "textarea",
+        name: "textarea",
+        value: "",
+        attrs: {"col" => "5", "row" => "7"},
+        required: false)
+      expected = "<textarea id=\"textarea\" name=\"textarea\" col=\"5\" row=\"7\"></textarea>"
+
+      textarea.to_s.should eq expected
+    end
+
+    it "has required attribute if required is set to true" do
+      textarea = Kemal::Form::TextAreaField.new(
+        id: "textarea",
+        name: "textarea",
+        value: "",
+        attrs: nil,
+        required: true)
+      expected = "<textarea id=\"textarea\" name=\"textarea\" required></textarea>"
+
+      textarea.to_s.should eq expected
+    end
+  end
+
+  describe "SelectField" do
+    it "renders an empty select if no options given" do
+      select_field = Kemal::Form::SelectField.new(
+        id: "select_field",
+        name: "select_field",
+        value: "",
+        attrs: nil,
+        required: false,
+        label: nil)
+      expected = "<select id=\"select_field\" name=\"select_field\"></select>"
+      
+      select_field.options.size.should eq 0
+      select_field.to_s.should eq expected
+    end
+
+    it "renders a select with given options" do
+      select_options = [
+        Kemal::Form::SelectField::Option.new("blue"),
+        Kemal::Form::SelectField::Option.new("green"),
+        Kemal::Form::SelectField::Option.new("red")
+      ]
+      select_field = Kemal::Form::SelectField.new(
+        id: "select_field",
+        name: "select_field",
+        value: "",
+        attrs: nil,
+        required: false,
+        label: nil,
+        options: select_options)
+      expected = "<select id=\"select_field\" name=\"select_field\">" \
+      "<option value=\"blue\">blue</option>" \
+      "<option value=\"green\">green</option>" \
+      "<option value=\"red\">red</option>" \
+      "</select>"
+
+      select_field.options.size.should eq 3
+      select_field.to_s.should eq expected
+    end
+  end
 end
