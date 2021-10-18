@@ -10,7 +10,6 @@ describe "Kemal::Form::Field" do
             id: "{{field.id}}_field",
             name: "{{field.id}}_field",
             value: "",
-            attrs: nil,
             required: false)
           expected = "<input type=\"{{field.id}}\" id=\"{{field.id}}_field\" name=\"{{field.id}}_field\" value=\"\"/>"
 
@@ -29,13 +28,35 @@ describe "Kemal::Form::Field" do
           {{field.id}}_field.to_s.should eq expected
         end
 
+        it "has required attribute if required is set to true" do
+          {{field.id}}_field = Kemal::Form::{{field.id.stringify.titleize.id}}Field.new(
+            id: "{{field.id}}_field",
+            name: "{{field.id}}_field",
+            value: "",
+            required: true)
+          expected = "<input type=\"{{field.id}}\" id=\"{{field.id}}_field\" name=\"{{field.id}}_field\" value=\"\" required/>"
+          
+          {{field.id}}_field.to_s.should eq expected
+        end
+
+        it "should have required attribute if given a Kemal::FormValidator::Required" do
+          {{field.id}}_field = Kemal::Form::{{field.id.stringify.titleize.id}}Field.new(
+            id: "{{field.id}}_field",
+            name: "{{field.id}}_field",
+            value: "",
+            required: false,
+            validators: [Kemal::FormValidator::Required.new] of Kemal::FormValidator::Validator)
+          expected = "<input type=\"{{field.id}}\" id=\"{{field.id}}_field\" name=\"{{field.id}}_field\" value=\"\" required/>"
+
+          {{field.id}}_field.to_s.should eq expected
+        end
+
         {% if field.id.stringify == "checkbox" || field.id.stringify == "radio" %}
           it "is not checked by default" do
             {{field.id}}_field = Kemal::Form::{{field.id.stringify.titleize.id}}Field.new(
               id: "{{field.id}}_field",
               name: "{{field.id}}_field",
               value: "",
-              attrs: nil,
               required: false)
             
             {{field.id}}_field.checked.should be_false
@@ -46,22 +67,9 @@ describe "Kemal::Form::Field" do
               id: "{{field.id}}_field",
               name: "{{field.id}}_field",
               value: "",
-              attrs: nil,
               required: true)
             {{field.id}}_field.checked = true
-            expected = "<input type=\"{{field.id}}\" id=\"{{field.id}}_field\" name=\"{{field.id}}_field\" value=\"\" checked/>"
-            
-            {{field.id}}_field.to_s.should eq expected
-          end
-        {% else %}
-          it "has required attribute if required is set to true" do
-            {{field.id}}_field = Kemal::Form::{{field.id.stringify.titleize.id}}Field.new(
-              id: "{{field.id}}_field",
-              name: "{{field.id}}_field",
-              value: "",
-              attrs: nil,
-              required: true)
-            expected = "<input type=\"{{field.id}}\" id=\"{{field.id}}_field\" name=\"{{field.id}}_field\" required value=\"\"/>"
+            expected = "<input type=\"{{field.id}}\" id=\"{{field.id}}_field\" name=\"{{field.id}}_field\" value=\"\" checked required/>"
             
             {{field.id}}_field.to_s.should eq expected
           end
@@ -70,13 +78,50 @@ describe "Kemal::Form::Field" do
     {% end %}
   {% end %}
 
+  describe "NumberField" do
+    it "should have min attribute set if NumberRange validator specifies a min" do
+      num_field = Kemal::Form::NumberField.new(
+        id: "num_field",
+        name: "num_field",
+        value: "",
+        required: false,
+        validators: [Kemal::FormValidator::NumberRange.new(min: 13)] of Kemal::FormValidator::Validator)
+
+        num_field.to_s.should contain("min=\"13\"")
+        num_field.to_s.should_not contain("max=")
+    end
+
+    it "should have max attribute set if NumberRange validator specifies a max" do
+      num_field = Kemal::Form::NumberField.new(
+        id: "num_field",
+        name: "num_field",
+        value: "",
+        required: false,
+        validators: [Kemal::FormValidator::NumberRange.new(max: 13)] of Kemal::FormValidator::Validator)
+
+        num_field.to_s.should contain("max=\"13\"")
+        num_field.to_s.should_not contain("min=")
+    end
+
+    it "should have min and max attribute set if NumberRange validator specifies a min and max" do
+      num_field = Kemal::Form::NumberField.new(
+        id: "num_field",
+        name: "num_field",
+        value: "",
+        required: false,
+        validators: [Kemal::FormValidator::NumberRange.new(min: 13, max: 50)] of Kemal::FormValidator::Validator)
+
+        num_field.to_s.should contain("min=\"13\"")
+        num_field.to_s.should contain("max=\"50\"")
+    end
+  end
+
   describe "TextAreaField" do
     it "has id and name attributes" do
       textarea = Kemal::Form::TextAreaField.new(
         id: "textarea",
         name: "textarea",
         value: "",
-        attrs: nil,
         required: false)
       expected = "<textarea id=\"textarea\" name=\"textarea\"></textarea>"
 
@@ -100,7 +145,6 @@ describe "Kemal::Form::Field" do
         id: "textarea",
         name: "textarea",
         value: "",
-        attrs: nil,
         required: true)
       expected = "<textarea id=\"textarea\" name=\"textarea\" required></textarea>"
 
@@ -114,7 +158,6 @@ describe "Kemal::Form::Field" do
         id: "select_field",
         name: "select_field",
         value: "",
-        attrs: nil,
         required: false,
         label: nil)
       expected = "<select id=\"select_field\" name=\"select_field\"></select>"
@@ -133,7 +176,6 @@ describe "Kemal::Form::Field" do
         id: "select_field",
         name: "select_field",
         value: "",
-        attrs: nil,
         required: false,
         label: nil,
         options: select_options)

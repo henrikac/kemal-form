@@ -31,13 +31,13 @@ module Kemal
       # Initializes a new `SelectField`.
       def initialize(id,
         name,
-        attrs,
         value,
         required,
         label,
+        attrs = {} of String => String,
         validators = [] of Kemal::FormValidator::Validator,
         @options = [] of Option)
-        super id, name, attrs, value, required, label, validators
+        super id, name, value, required, label, attrs, validators
       end
 
       def to_s(io : IO)

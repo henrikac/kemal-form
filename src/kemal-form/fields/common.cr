@@ -14,17 +14,19 @@ module Kemal
 
             def to_s(io : IO)
               io << "<input type=\"{{field.id}}\" id=\"#{@id}\" name=\"#{@name}\""
-              io << render_attrs if !@attrs.nil? && !@attrs.not_nil!.empty?
+              io << render_attrs if !@attrs.empty?
               io << " value=\"#{@value}\""
               io << " checked" if @checked
+              io << " required" if @required
               io << "/>"
             end
           {% else %}
             def to_s(io : IO)
               io << "<input type=\"#{@type}\" id=\"#{@id}\" name=\"#{@name}\""
-              io << render_attrs if !@attrs.nil? && !@attrs.not_nil!.empty?
+              io << render_attrs if !@attrs.empty?
+              io << " value=\"#{@value}\""
               io << " required" if @required
-              io << " value=\"#{@value}\"/>"
+              io << "/>"
             end
           {% end %}
         end

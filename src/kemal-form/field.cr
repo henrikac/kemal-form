@@ -11,7 +11,7 @@ module Kemal
       getter name : String
 
       # Returns the additional attributes added to the field.
-      getter attrs : Hash(String, String)?
+      getter attrs : Hash(String, String)
 
       # Returns whether the field's required attribute should be set.
       getter required : Bool
@@ -32,14 +32,34 @@ module Kemal
       # *required*, *label* and *validators*.
       def initialize(@id,
         @name,
-        @attrs,
         @value,
         @required,
         @label = nil,
+        @attrs = {} of String => String,
         @validators = [] of Kemal::FormValidator::Validator)
-        if !@attrs.nil?
+        if !@attrs.empty?
           reserved_attrs = ["id", "name", "required"]
           reserved_attrs.each { |ra| @attrs.not_nil!.delete(ra) }
+        end
+
+        if !@validators.empty?
+          @validators.each do |validator|
+            if validator.is_a?(Kemal::FormValidator::Required)
+              @required = true
+              next
+            end
+
+            if validator.is_a?(Kemal::FormValidator::NumberRange)
+              if !validator.min.nil?
+                @attrs["min"] = validator.min.to_s
+              end
+
+              if !validator.max.nil?
+                @attrs["max"] = validator.max.to_s
+              end
+              next
+            end
+          end
         end
 
         if @label.nil?

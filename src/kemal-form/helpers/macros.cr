@@ -83,10 +83,12 @@ macro field(decl, **opts)
   @{{field_name}} : {{field_type}} = {{field_type.id}}.new(
     id: {{id_attr}},
     name: {{name_attr}},
-    attrs: {{extra_attrs}},
     value: {{field_value}},
     required: {{required}},
     label: {{label}},
+    {% if !extra_attrs.nil? %}
+      attrs: {{extra_attrs}},
+    {% end %}
     {% if !validators.nil? %}
       validators: {{validators.id}} of Kemal::FormValidator::Validator,
     {% end %}

@@ -24,13 +24,18 @@ module Kemal
   # ```
   module FormValidator
     abstract class Validator
+      # The default error message.
       @message : String = ""
 
       abstract def validate(field : Kemal::Form::Field)
     end
 
     # `Kemal::FormValidator::Required` validates that input was provided.
+    #
+    # Adding this validator to a field will also add the required attribute to the field if
+    # it has not already been set.
     class Required < Validator
+      # :inherit:
       @message : String = "This field is required"
 
       def initialize; end
@@ -48,7 +53,10 @@ module Kemal
 
     # `Kemal::FormValidator::Length` validates the length of a string.
     class Length < Validator
+      # The minimum length of the string.
       @min : Int32
+
+      # The maximum length of the string.
       @max : Int32
 
       def initialize(@min = -1, @max = -1, @message = "")
@@ -81,9 +89,14 @@ module Kemal
 
     # `Kemal::FormValidator::NumberRange` validates that a number is of a minimum and/or
     # maximum value, inclusive.
+    #
+    # Adding this validator to a field will also add the `min` and/or `max` attribute to the field.
     class NumberRange < Validator
-      @min : Number::Primitive?
-      @max : Number::Primitive?
+      # Returns the minimum value of the number.
+      getter min : Number::Primitive?
+
+      # Returns the maximum value of the number.
+      getter max : Number::Primitive?
 
       def initialize(@min = nil, @max = nil, @message = "")
         if @min.nil? && @max.nil?
