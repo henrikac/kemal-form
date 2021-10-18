@@ -182,9 +182,9 @@ end
 
 | Validator | Description |
 | --- | --- |
-| `Required` | Validates that the field is not empty |
+| `Required` | Validates that the field is not empty. Adding this validator to a field will also add the `required` attribute to the field if it has not already been set. |
 | `Length` | Validates that the field has a `min` length, `max` length or has a length between `min` and `max` |
-| `NumberRange` | Validates that a number has a `min` value, `max` value or has a value between `min` and `max` |
+| `NumberRange` | Validates that a number has a `min` value, `max` value or has a value between `min` and `max`. Adding this validator will also add the `min` and/or `max` attribute to the field. |
 | `Email` | Validates that the field is a valid email |
 
 #### Custom field validators
