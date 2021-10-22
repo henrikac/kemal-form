@@ -70,10 +70,10 @@ end
           <% end %>
         </div>
       <% end %>
-	  <% form.buttons.each do |button| %>
+      <% form.buttons.each do |button| %>
         <%= button %>
       <% end %>
-	</form>
+    </form>
   </body>
 </html>
 ```
