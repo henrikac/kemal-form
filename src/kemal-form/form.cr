@@ -2,6 +2,8 @@ require "http"
 
 module Kemal
   class Form
+    @ctx : HTTP::Server::Context?
+
     # Returns the form's fields.
     getter fields : Array(Field)
 
@@ -24,12 +26,12 @@ module Kemal
     #   # ...
     #   render "src/views/index.ecr"
     # ```
-    def initialize(ctx : HTTP::Server::Context? = nil)
+    def initialize(@ctx = nil)
       @fields = get_form_fields
       @buttons = get_form_buttons
 
       radio_groups = Set(String).new
-      if ctx.nil?
+      if @ctx.nil?
         @fields.each do |field|
           if field.is_a?(Kemal::Form::RadioField) && !radio_groups.includes?(field.name)
             field.checked = true
@@ -37,7 +39,7 @@ module Kemal
           end
         end
       else
-        form_body = ctx.params.body
+        form_body = @ctx.not_nil!.params.body
         @fields.each do |field|
           if field.is_a?(Kemal::Form::CheckboxField)
             field.checked = form_body.has_key?(field.name)
@@ -70,7 +72,7 @@ module Kemal
       end
     end
 
-    # Validates the form.
+    # Returns `true` if the form is valid, `false` otherwise.
     #
     # ```
     # class MyForm < Kemal::Form
@@ -86,7 +88,7 @@ module Kemal
     #   render "src/views/index.ecr"
     # end
     # ```
-    def valid?
+    def valid? : Bool
       is_valid = true
       @fields.each do |field|
         if field.validate == false
@@ -94,6 +96,15 @@ module Kemal
         end
       end
       return is_valid
+    end
+
+    # Returns the form body.
+    #
+    # NOTE: This is the same as `env.params.body`.
+    def body : URI::Params
+      return URI::Params.new if @ctx.nil?
+
+      @ctx.not_nil!.params.body
     end
 
     private def get_form_fields : Array(Field)
