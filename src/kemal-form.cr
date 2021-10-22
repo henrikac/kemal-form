@@ -36,6 +36,6 @@ module Kemal
   # end
   # ```
   class Form
-    VERSION = "0.3.1"
+    VERSION = "0.3.2"
   end
 end
