@@ -21,32 +21,59 @@ kemal-form is a shard that makes it easy and fun to work with forms in your [Kem
 require "kemal"
 require "kemal-form"
 
-class CustomForm < Kemal::Form
-  field username : Kemal::Form::TextField, required: true
-  field email : Kemal::Form::EmailField
-  field age : Kemal::Form::NumberField, attrs: {"min" => "18", "max" => "30"}
-  field password : Kemal::Form::PasswordField, required: true
-  button submit : Kemal::Form::SubmitButton
+class LoginForm < Kemal::Form
+  field username : Kemal::Form::TextField,
+                     validators: [Kemal::FormValidator::Required.new]
+  field password : Kemal::Form::PasswordField,
+                     validators: [Kemal::FormValidator::Required.new]
+  button submit : Kemal::Form::SubmitButton,
+                    text: "Login"
 end
 
-get "/" do
-  my_form = CustomForm.new
-  render "src/views/index.ecr"
+get "/login" do
+  form = LoginForm.new
+  render "src/views/login.ecr"
+end
+
+post "/login" do |env|
+  form = LoginForm.new
+  if form.valid?
+    username = form.body["username"].as(String)
+    password = form.body["password"].as(String)
+    env.redirect "/"
+    next
+  end
+  render "src/views/login.ecr"
 end
 ```
 
-Use `macro render_form(form, method, action = "")` to render the form in your template.
-
-**src/views/index.ecr**
+**src/views/login.ecr**
 ```erb
 <!DOCTYPE html>
 <html>
   <head>
-    <title>index.ecr</title>
+    <title>Login</title>
   </head>
   <body>
-    <h1>Hello index.ecr</h1>
-    <%= render_form my_form, "POST" %>
+    <h1>Login</h1>
+    <form method="POST">
+      <% form.fields.each do |field| %>
+        <div>
+          <%= field.label %>
+          <%= field %>
+          <% if !field.errors.empty? %>
+            <ul>
+              <% field.errors.each do |error| %>
+                <li><%= error %></li>
+              <% end %>
+            </ul>
+          <% end %>
+        </div>
+      <% end %>
+	  <% form.buttons.each do |button| %>
+        <%= button %>
+      <% end %>
+	</form>
   </body>
 </html>
 ```
@@ -57,53 +84,23 @@ This will output
 <!DOCTYPE html>
 <html>
   <head>
-    <title>index.ecr</title>
+    <title>Login</title>
   </head>
   <body>
-    <h1>Hello index.ecr</h1>
+    <h1>Login</h1>
     <form method="POST">
       <div>
         <label for="username">Username</label>
         <input type="text" id="username" name="username" required/>
       </div>
       <div>
-        <label for="email">Email</label>
-        <input type="email" id="email" username="email"/>
-      </div>
-      <div>
-        <label for="age">Age</label>
-        <input type="number" id="age" name="age" min="18" max="30"/>
-      </div>
-      <div>
         <label for="password">Password</label>
         <input type="password" id="password" name="password" required/>
       </div>
-      <button type="submit">Submit</button>
+      <button type="submit">Login</button>
     </form>
   </body>
 </html>
-```
-
-The way that the form is rendered does not fit all situations and if the form needs to be rendered in a different way simply create your own `render_form` macro.
-
-```crystal
-macro render_form(form)
-  io = IO::Memory.new
-  io << "<form method=\"POST\">"
-  
-  # access each field in the form
-  {{form.id}}.fields.each do |field|
-    # code ...
-  end
-
-  # access each button in the form
-  {{form.id}}.buttons.each do |button|
-    # code ...
-  end
-
-  io << "</form>"
-  io.to_s
-end
 ```
 
 The field macro used to generate form fields takes a few optional arguments/options:
@@ -149,36 +146,6 @@ kemal-form comes with a single button `Kemal::Form::SubmitButton`. However, cust
 #### Field validators
 
 kemal-form comes with a few field validators that helps making sure that the form data is valid.
-
-```crystal
-class LoginForm < Kemal::Form
-  field username : Kemal::Form::TextField,
-                    validators: [
-                      Kemal::FormValidator::Required.new,
-                    ]
-  field password : Kemal::Form::PasswordField,
-                    validators: [
-                      Kemal::FormValidator::Length.new(min: 6)
-                    ]
-  button login : Kemal::Form::SubmitButton,
-                  text: "Login"
-end
-
-get "/login" do
-  login_form = LoginForm.new
-  render "src/views/login.ecr"
-end
-
-post "/login" do |env|
-  login_form = MyForm.new env
-  if login_form.valid?
-    puts "You are now logged in"
-    env.redirect "/"
-    next
-  end
-  render "src/views/login.ecr"
-end
-```
 
 | Validator | Description |
 | --- | --- |
