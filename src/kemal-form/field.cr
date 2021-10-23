@@ -80,6 +80,25 @@ module Kemal
         return @errors.empty?
       end
 
+      # Adds error to the field.
+      #
+      # ```
+      # post "/login" do |env|
+      #   form = SignUpForm.new env
+      #   form.valid?
+      #     if username_already_exist
+      #       form.username.add_error "Username already exist"
+      #       ...
+      #     end
+      #     ...
+      #   end
+      #   ...
+      # end
+      # ```
+      def add_error(message : String)
+        @errros << message
+      end
+
       private def render_attrs : String
         String.build do |str|
           @attrs.not_nil!.each do |k, v|

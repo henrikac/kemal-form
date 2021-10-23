@@ -10,6 +10,9 @@ module Kemal
     # Returns the form's buttons.
     getter buttons : Array(Button)
 
+    # Returns form errors.
+    getter errors : Array(String)
+
     # Initializes a new form.
     #
     # ```
@@ -29,6 +32,7 @@ module Kemal
     def initialize(@ctx = nil)
       @fields = get_form_fields
       @buttons = get_form_buttons
+      @errors = [] of String
 
       radio_groups = Set(String).new
       if @ctx.nil?
@@ -105,6 +109,25 @@ module Kemal
       return URI::Params.new if @ctx.nil?
 
       @ctx.not_nil!.params.body
+    end
+
+      # Adds error to the form.
+      #
+      # ```
+      # post "/login" do |env|
+      #   form = LoginForm.new env
+      #   form.valid?
+      #     if wrong_password_entered
+      #       form.add_error "Invalid username or password"
+      #       ...
+      #     end
+      #     ...
+      #   end
+      #   ...
+      # end
+      # ```
+    def add_error(message : String)
+      @errors << message
     end
 
     private def get_form_fields : Array(Field)
