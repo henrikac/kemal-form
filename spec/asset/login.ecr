@@ -1,0 +1,26 @@
+<h1>Login</h1>
+<% if !form.errors.empty? %>
+  <% form.errors.each do |error| %>
+    <ul>
+	  <li><%= error %></li>
+    </ul>
+  <% end %>
+<% end %>
+<form method="POST">
+  <% form.fields.each do |field| %>
+	<div>
+	  <%= field.label %>
+	  <%= field %>
+	  <% if !field.errors.empty? %>
+		<ul>
+		  <% field.errors.each do |error| %>
+			<li><%= error %></li>
+		  <% end %>
+		</ul>
+	  <% end %>
+	</div>
+  <% end %>
+  <% form.buttons.each do |button| %>
+	<%= button %>
+  <% end %>
+</form>
