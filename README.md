@@ -56,6 +56,13 @@ end
   </head>
   <body>
     <h1>Login</h1>
+    <% if !form.errors.empty? %>
+      <% form.errors.each do |error| %>
+        <ul>
+          <li><%= error %></li>
+        </ul>
+      <% end %>
+    <% end %>
     <form method="POST">
       <% form.fields.each do |field| %>
         <div>
@@ -170,6 +177,12 @@ class CustomValidator < Kemal::FormValidator::Validator
   end
 end
 ```
+
+#### Errors
+
+A situation might happen where you want to add an error to either a specific field or to the form after you have validated the form with `Form#valid?`. To add and error to a specific field use `Field#add_error` and `Form#add_form` to add a form error.  
+
+A field error could be something like `"Username already exist"` and a form error could be something like `"Invalid username or password"` where you don't want to couple the error to a specific field.
 
 ## Contributing
 
