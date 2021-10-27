@@ -57,11 +57,11 @@ end
   <body>
     <h1>Login</h1>
     <% if !form.errors.empty? %>
-      <% form.errors.each do |error| %>
-        <ul>
+      <ul>
+        <% form.errors.each do |error| %>
           <li><%= error %></li>
-        </ul>
-      <% end %>
+        <% end %>
+      </ul>
     <% end %>
     <form method="POST">
       <% form.fields.each do |field| %>
