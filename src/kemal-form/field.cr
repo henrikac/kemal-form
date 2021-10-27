@@ -96,7 +96,7 @@ module Kemal
       # end
       # ```
       def add_error(message : String)
-        @errros << message
+        @errors << message
       end
 
       private def render_attrs : String

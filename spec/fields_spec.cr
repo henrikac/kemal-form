@@ -189,4 +189,46 @@ describe "Kemal::Form::Field" do
       select_field.to_s.should eq expected
     end
   end
+
+  describe "#add_error" do
+    it "adds error to field errors" do
+      text_field = Kemal::Form::TextField.new(
+        id: "text",
+        name: "text",
+        value: "",
+        required: false)
+      text_field.add_error "field is invalid"
+
+      text_field.errors.empty?.should be_false
+      text_field.errors.includes?("field is invalid").should be_true
+    end
+  end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -50,4 +50,14 @@ describe "Form" do
     client_response.body.should contain("value=\"Alice\"")
     client_response.body.should contain("Field must be at least 6 characters")
   end
+
+  describe "#add_error" do
+    it "adds error to form errors" do
+      form = CustomForm.new
+      form.add_error "form is invalid"
+
+      form.errors.empty?.should be_false
+      form.errors.includes?("form is invalid").should be_true
+    end
+  end
 end
