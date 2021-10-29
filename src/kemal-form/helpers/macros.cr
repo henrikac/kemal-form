@@ -7,8 +7,8 @@
 # ```
 # class CustomForm < Kemal::Form
 #   button submit : Kemal::Form::SubmitButton,
-#                   text: "Login",
-#                   args: {"class" => "btn btn-primary"}
+#     text: "Login",
+#     args: {"class" => "btn btn-primary"}
 # end
 # ```
 macro button(decl, **options)

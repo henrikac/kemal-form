@@ -18,7 +18,7 @@ module Kemal
       def to_s(io : IO)
         io << "<label for=\"#{@for}\""
         if !@attrs.nil?
-          @attrs.not_nil!.each { |k,v| io << " #{k}=\"#{v}\"" }
+          @attrs.not_nil!.each { |k, v| io << " #{k}=\"#{v}\"" }
         end
         io << ">#{@text}</label>"
       end

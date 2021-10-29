@@ -31,12 +31,12 @@ module Kemal
       # Initializes a new form field with the given *id*, *name*, *attrs*, *value*,
       # *required*, *label* and *validators*.
       def initialize(@id,
-        @name,
-        @value,
-        @required,
-        @label = nil,
-        @attrs = {} of String => String,
-        @validators = [] of Kemal::FormValidator::Validator)
+                     @name,
+                     @value,
+                     @required,
+                     @label = nil,
+                     @attrs = {} of String => String,
+                     @validators = [] of Kemal::FormValidator::Validator)
         if !@attrs.empty?
           reserved_attrs = ["id", "name", "required"]
           reserved_attrs.each { |ra| @attrs.not_nil!.delete(ra) }

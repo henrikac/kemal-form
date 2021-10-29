@@ -11,13 +11,13 @@ module Kemal
   #
   # class LoginForm < Kemal::Form
   #   field username : Kemal::Form::TextField,
-  #                      validators: [Kemal::FormValidator::Required.new]
+  #     validators: [Kemal::FormValidator::Required.new]
   #   field password : Kemal::Form::PasswordField,
-  #                      validators: [
-  #                        Kemal::FormValidator::Length.new(min: 6)
-  #                      ]
+  #     validators: [
+  #       Kemal::FormValidator::Length.new(min: 6),
+  #     ]
   #   button login : Kemal::Form::SubmitButton,
-  #                    text: "Login"
+  #     text: "Login"
   # end
   #
   # get "/login" do

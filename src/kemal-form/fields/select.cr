@@ -5,12 +5,12 @@ module Kemal
     # ```
     # class SelectForm < Kemal::Form
     #   field colors : Kemal::Form::SelectField,
-    #                  options: [
-    #                    Kemal::Form::SelectField::Option.new("blue"),
-    #                    Kemal::Form::SelectField::Option.new("green"),
-    #                    Kemal::Form::SelectField::Option.new("red"),
-    #                    Kemal::Form::SelectField::Option.new("yellow")
-    #                  ]
+    #     options: [
+    #       Kemal::Form::SelectField::Option.new("blue"),
+    #       Kemal::Form::SelectField::Option.new("green"),
+    #       Kemal::Form::SelectField::Option.new("red"),
+    #       Kemal::Form::SelectField::Option.new("yellow"),
+    #     ]
     # end
     # ```
     #
@@ -30,13 +30,13 @@ module Kemal
 
       # Initializes a new `SelectField`.
       def initialize(id,
-        name,
-        value,
-        required,
-        label,
-        attrs = {} of String => String,
-        validators = [] of Kemal::FormValidator::Validator,
-        @options = [] of Option)
+                     name,
+                     value,
+                     required,
+                     label,
+                     attrs = {} of String => String,
+                     validators = [] of Kemal::FormValidator::Validator,
+                     @options = [] of Option)
         super id, name, value, required, label, attrs, validators
       end
 

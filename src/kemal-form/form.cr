@@ -111,21 +111,21 @@ module Kemal
       @ctx.not_nil!.params.body
     end
 
-      # Adds error to the form.
-      #
-      # ```
-      # post "/login" do |env|
-      #   form = LoginForm.new env
-      #   form.valid?
-      #     if wrong_password_entered
-      #       form.add_error "Invalid username or password"
-      #       ...
-      #     end
-      #     ...
-      #   end
-      #   ...
-      # end
-      # ```
+    # Adds error to the form.
+    #
+    # ```
+    # post "/login" do |env|
+    #   form = LoginForm.new env
+    #   form.valid?
+    #     if wrong_password_entered
+    #       form.add_error "Invalid username or password"
+    #       ...
+    #     end
+    #     ...
+    #   end
+    #   ...
+    # end
+    # ```
     def add_error(message : String)
       @errors << message
     end

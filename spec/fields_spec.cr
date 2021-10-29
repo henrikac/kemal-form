@@ -87,8 +87,8 @@ describe "Kemal::Form::Field" do
         required: false,
         validators: [Kemal::FormValidator::NumberRange.new(min: 13)] of Kemal::FormValidator::Validator)
 
-        num_field.to_s.should contain("min=\"13\"")
-        num_field.to_s.should_not contain("max=")
+      num_field.to_s.should contain("min=\"13\"")
+      num_field.to_s.should_not contain("max=")
     end
 
     it "should have max attribute set if NumberRange validator specifies a max" do
@@ -99,8 +99,8 @@ describe "Kemal::Form::Field" do
         required: false,
         validators: [Kemal::FormValidator::NumberRange.new(max: 13)] of Kemal::FormValidator::Validator)
 
-        num_field.to_s.should contain("max=\"13\"")
-        num_field.to_s.should_not contain("min=")
+      num_field.to_s.should contain("max=\"13\"")
+      num_field.to_s.should_not contain("min=")
     end
 
     it "should have min and max attribute set if NumberRange validator specifies a min and max" do
@@ -111,8 +111,8 @@ describe "Kemal::Form::Field" do
         required: false,
         validators: [Kemal::FormValidator::NumberRange.new(min: 13, max: 50)] of Kemal::FormValidator::Validator)
 
-        num_field.to_s.should contain("min=\"13\"")
-        num_field.to_s.should contain("max=\"50\"")
+      num_field.to_s.should contain("min=\"13\"")
+      num_field.to_s.should contain("max=\"50\"")
     end
   end
 
@@ -161,7 +161,7 @@ describe "Kemal::Form::Field" do
         required: false,
         label: nil)
       expected = "<select id=\"select_field\" name=\"select_field\"></select>"
-      
+
       select_field.options.size.should eq 0
       select_field.to_s.should eq expected
     end
@@ -170,7 +170,7 @@ describe "Kemal::Form::Field" do
       select_options = [
         Kemal::Form::SelectField::Option.new("blue"),
         Kemal::Form::SelectField::Option.new("green"),
-        Kemal::Form::SelectField::Option.new("red")
+        Kemal::Form::SelectField::Option.new("red"),
       ]
       select_field = Kemal::Form::SelectField.new(
         id: "select_field",
@@ -180,10 +180,10 @@ describe "Kemal::Form::Field" do
         label: nil,
         options: select_options)
       expected = "<select id=\"select_field\" name=\"select_field\">" \
-      "<option value=\"blue\">blue</option>" \
-      "<option value=\"green\">green</option>" \
-      "<option value=\"red\">red</option>" \
-      "</select>"
+                 "<option value=\"blue\">blue</option>" \
+                 "<option value=\"green\">green</option>" \
+                 "<option value=\"red\">red</option>" \
+                 "</select>"
 
       select_field.options.size.should eq 3
       select_field.to_s.should eq expected
@@ -204,31 +204,3 @@ describe "Kemal::Form::Field" do
     end
   end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

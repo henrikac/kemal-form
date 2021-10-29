@@ -130,8 +130,8 @@ describe "Kemal::FormValidator::Validator" do
 
     it "should raise an argument error if min is greater than or equal to max" do
       min_max = [
-        { min: 5, max: 5 },
-        { min: 7, max: 3}
+        {min: 5, max: 5},
+        {min: 7, max: 3},
       ]
 
       min_max.each do |mm|
@@ -219,8 +219,8 @@ describe "Kemal::FormValidator::Validator" do
 
     it "should raise an argument error if min if greater than or equal to max" do
       min_max = [
-        { min: 5, max: 5 },
-        { min: 7, max: 3}
+        {min: 5, max: 5},
+        {min: 7, max: 3},
       ]
 
       min_max.each do |mm|
@@ -244,7 +244,7 @@ describe "Kemal::FormValidator::Validator" do
         invalid_emails = [
           "alice @bob.com",
           "alice@ bob.com",
-          "alice@bobcom"
+          "alice@bobcom",
         ]
         form = TestValidator.new
         validator = Kemal::FormValidator::Email.new
