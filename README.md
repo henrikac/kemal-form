@@ -85,6 +85,39 @@ end
 </html>
 ```
 
+**src/views/login.slang**  
+
+If you prefer [Slang](https://github.com/jeromegn/slang) templates (via [Kilt](https://github.com/jeromegn/kilt) or [Kemal-Kilt](https://github.com/kemalcr/kemal-kilt)), the equivalent template looks like this:  
+
+```slim
+doctype html
+html
+  head
+    title Login
+  body
+    h1 Login
+
+    - unless form.errors.empty?
+      ul
+        - form.errors.each do |error|
+          li = error
+
+    form method="post"
+      - form.fields.each do |field|
+        div
+          == field.label.to_s
+          == field.to_s
+          - unless field.errors.empty?
+            ul
+              - field.errors.each do |error|
+                li = error
+
+      - form.buttons.each do |button|
+        == button.to_s
+```
+
+*Note:* When using Slang through Kilt, remember to call `.to_s` on fields, labels, and buttons. This forces them to render to a plain `String` before being written to the template output.
+
 This will output
 
 ```html
